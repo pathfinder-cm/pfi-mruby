@@ -66,6 +66,27 @@ def __main__(argv)
     }
   )
 
+  delete_command = PfiMruby::Command.new(
+    use: 'delete',
+    short: 'Specify things to delete',
+    long: 'Specify things to delete'
+  )
+
+  delete_container_command = PfiMruby::Command.new(
+    use: 'container',
+    short: 'Delete a container',
+    long: 'Delete a container',
+    run: Proc.new { |command, argv|
+      pathfinder = Pathfinder::PathfinderExt.new(port: PATHFINDER_PORT)
+      _, container = pathfinder.delete_container(
+        cluster_name: CLUSTER_NAME, 
+        authentication_token: AUTHENTICATION_TOKEN,
+        container: Pathfinder::Container.new(hostname: argv[1])
+      )
+      puts "Container '#{argv[1]}' deleted!"
+    }
+  )
+
   version_command = PfiMruby::Command.new(
     use: 'version',
     short: 'Show pfi version',
@@ -76,8 +97,10 @@ def __main__(argv)
   get_command.add_command(get_nodes_command)
   get_command.add_command(get_containers_command)
   create_command.add_command(create_container_command)
+  delete_command.add_command(delete_container_command)
   root_command.add_command(get_command)
   root_command.add_command(create_command)
+  root_command.add_command(delete_command)
   root_command.add_command(version_command)
   root_command.execute(argv)
 end
