@@ -32,7 +32,22 @@ def __main__(argv)
     }
   )
 
+  get_containers_command = PfiMruby::Command.new(
+    use: 'containers',
+    short: 'List all available containers',
+    long: 'List all available containers',
+    run: Proc.new { |command, argv|
+      pathfinder = Pathfinder::PathfinderExt.new(port: 3000)
+      _, containers = pathfinder.get_containers(cluster_name: CLUSTER_NAME, authentication_token: AUTHENTICATION_TOKEN)
+      puts "Hostname, Ipaddress, Image, Status"
+      containers.each do |container|
+        puts "#{container.hostname}, #{container.ipaddress}, #{container.image}, #{container.status}"
+      end
+    }
+  )
+
   get_command.add_command(get_nodes_command)
+  get_command.add_command(get_containers_command)
   root_command.add_command(get_command)
   root_command.execute(argv)
 end
