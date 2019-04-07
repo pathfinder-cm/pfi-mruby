@@ -1,4 +1,5 @@
 def __main__(argv)
+  PATHFINDER_PORT = 3000
   CLUSTER_NAME = 'default'
   AUTHENTICATION_TOKEN = 'pathfinder'
 
@@ -23,7 +24,7 @@ def __main__(argv)
     short: 'List all available nodes',
     long: 'List all available nodes',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(port: 3000)
+      pathfinder = Pathfinder::PathfinderExt.new(port: PATHFINDER_PORT)
       _, nodes = pathfinder.get_nodes(cluster_name: CLUSTER_NAME, authentication_token: AUTHENTICATION_TOKEN)
       puts "Hostname, Ipaddress"
       nodes.each do |node|
@@ -37,7 +38,7 @@ def __main__(argv)
     short: 'List all available containers',
     long: 'List all available containers',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(port: 3000)
+      pathfinder = Pathfinder::PathfinderExt.new(port: PATHFINDER_PORT)
       _, containers = pathfinder.get_containers(cluster_name: CLUSTER_NAME, authentication_token: AUTHENTICATION_TOKEN)
       puts "Hostname, Ipaddress, Image, Status"
       containers.each do |container|
