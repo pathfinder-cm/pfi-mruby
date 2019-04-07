@@ -46,8 +46,16 @@ def __main__(argv)
     }
   )
 
+  version_command = PfiMruby::Command.new(
+    use: 'version',
+    short: 'Show pfi version',
+    long: 'Show pfi version',
+    run: Proc.new { |command, argv| puts "v#{PfiMruby::VERSION}" }
+  )
+
   get_command.add_command(get_nodes_command)
   get_command.add_command(get_containers_command)
   root_command.add_command(get_command)
+  root_command.add_command(version_command)
   root_command.execute(argv)
 end
