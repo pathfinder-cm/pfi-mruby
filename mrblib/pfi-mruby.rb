@@ -45,6 +45,27 @@ def __main__(argv)
     }
   )
 
+  create_command = PfiMruby::Command.new(
+    use: 'create',
+    short: 'Specify things to create',
+    long: 'Specify things to create'
+  )
+
+  create_container_command = PfiMruby::Command.new(
+    use: 'container',
+    short: 'Create a container',
+    long: 'Create a container',
+    run: Proc.new { |command, argv|
+      pathfinder = Pathfinder::PathfinderExt.new(port: PATHFINDER_PORT)
+      _, container = pathfinder.create_container(
+        cluster_name: CLUSTER_NAME, 
+        authentication_token: AUTHENTICATION_TOKEN,
+        container: Pathfinder::Container.new(hostname: argv[1], image: argv[2])
+      )
+      puts "Container '#{argv[1]}' created!"
+    }
+  )
+
   version_command = PfiMruby::Command.new(
     use: 'version',
     short: 'Show pfi version',
@@ -54,7 +75,9 @@ def __main__(argv)
 
   get_command.add_command(get_nodes_command)
   get_command.add_command(get_containers_command)
+  create_command.add_command(create_container_command)
   root_command.add_command(get_command)
+  root_command.add_command(create_command)
   root_command.add_command(version_command)
   root_command.execute(argv)
 end
