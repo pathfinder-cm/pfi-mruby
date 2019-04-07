@@ -87,6 +87,27 @@ def __main__(argv)
     }
   )
 
+  reschedule_command = PfiMruby::Command.new(
+    use: 'reschedule',
+    short: 'Specify things to reschedule',
+    long: 'Specify things to reschedule'
+  )
+
+  reschedule_container_command = PfiMruby::Command.new(
+    use: 'container',
+    short: 'Reschedule a container',
+    long: 'Reschedule a container',
+    run: Proc.new { |command, argv|
+      pathfinder = Pathfinder::PathfinderExt.new(port: PATHFINDER_PORT)
+      _, container = pathfinder.reschedule_container(
+        cluster_name: CLUSTER_NAME, 
+        authentication_token: AUTHENTICATION_TOKEN,
+        container: Pathfinder::Container.new(hostname: argv[1])
+      )
+      puts "Container '#{argv[1]}' rescheduled!"
+    }
+  )
+
   version_command = PfiMruby::Command.new(
     use: 'version',
     short: 'Show pfi version',
@@ -98,9 +119,11 @@ def __main__(argv)
   get_command.add_command(get_containers_command)
   create_command.add_command(create_container_command)
   delete_command.add_command(delete_container_command)
+  reschedule_command.add_command(reschedule_container_command)
   root_command.add_command(get_command)
   root_command.add_command(create_command)
   root_command.add_command(delete_command)
+  root_command.add_command(reschedule_command)
   root_command.add_command(version_command)
   root_command.execute(argv)
 end
