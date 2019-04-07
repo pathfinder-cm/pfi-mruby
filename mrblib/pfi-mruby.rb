@@ -16,6 +16,7 @@ def __main__(argv)
     short: 'Specify things to get',
     long: 'Specify things to get'
   )
+  root_command.add_command(get_command)
 
   get_nodes_command = PfiMruby::Command.new(
     use: 'nodes',
@@ -30,6 +31,7 @@ def __main__(argv)
       end
     }
   )
+  get_command.add_command(get_nodes_command)
 
   get_containers_command = PfiMruby::Command.new(
     use: 'containers',
@@ -44,12 +46,14 @@ def __main__(argv)
       end
     }
   )
+  get_command.add_command(get_containers_command)
 
   create_command = PfiMruby::Command.new(
     use: 'create',
     short: 'Specify things to create',
     long: 'Specify things to create'
   )
+  root_command.add_command(create_command)
 
   create_container_command = PfiMruby::Command.new(
     use: 'container',
@@ -65,12 +69,14 @@ def __main__(argv)
       puts "Container '#{argv[1]}' created!"
     }
   )
+  create_command.add_command(create_container_command)
 
   delete_command = PfiMruby::Command.new(
     use: 'delete',
     short: 'Specify things to delete',
     long: 'Specify things to delete'
   )
+  root_command.add_command(delete_command)
 
   delete_container_command = PfiMruby::Command.new(
     use: 'container',
@@ -86,12 +92,14 @@ def __main__(argv)
       puts "Container '#{argv[1]}' deleted!"
     }
   )
+  delete_command.add_command(delete_container_command)
 
   reschedule_command = PfiMruby::Command.new(
     use: 'reschedule',
     short: 'Specify things to reschedule',
     long: 'Specify things to reschedule'
   )
+  root_command.add_command(reschedule_command)
 
   reschedule_container_command = PfiMruby::Command.new(
     use: 'container',
@@ -107,6 +115,7 @@ def __main__(argv)
       puts "Container '#{argv[1]}' rescheduled!"
     }
   )
+  reschedule_command.add_command(reschedule_container_command)
 
   version_command = PfiMruby::Command.new(
     use: 'version',
@@ -114,16 +123,7 @@ def __main__(argv)
     long: 'Show pfi version',
     run: Proc.new { |command, argv| puts "v#{PfiMruby::VERSION}" }
   )
-
-  get_command.add_command(get_nodes_command)
-  get_command.add_command(get_containers_command)
-  create_command.add_command(create_container_command)
-  delete_command.add_command(delete_container_command)
-  reschedule_command.add_command(reschedule_container_command)
-  root_command.add_command(get_command)
-  root_command.add_command(create_command)
-  root_command.add_command(delete_command)
-  root_command.add_command(reschedule_command)
   root_command.add_command(version_command)
+
   root_command.execute(argv)
 end
