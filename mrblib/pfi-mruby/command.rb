@@ -17,8 +17,12 @@ module PfiMruby
     end
 
     def execute(argv)
-      if argv.length == 1
-        @run.call(self)
+      if @commands == [] || argv.length <= 1
+        if !@run.nil?
+          @run.call(self, argv)
+        else
+          help
+        end
       else
         command = @commands.find{ |cmd| cmd.use == argv[1]}
         if command

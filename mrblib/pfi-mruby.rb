@@ -8,15 +8,13 @@ def __main__(argv)
     short: 'pfi is CLI for Pathfinder Container Manager',
     long: "(P)ath(f)inder (I)nterface
                 CLI for Pathfinder Container Manager.
-                See http://github.com/pathfinder-cm/pfi",
-    run: Proc.new { |command, argv| command.help }
+                See http://github.com/pathfinder-cm/pfi"
   )
 
   get_command = PfiMruby::Command.new(
     use: 'get',
     short: 'Specify things to get',
-    long: 'Specify things to get',
-    run: Proc.new { |command, argv| command.help }
+    long: 'Specify things to get'
   )
 
   get_nodes_command = PfiMruby::Command.new(
