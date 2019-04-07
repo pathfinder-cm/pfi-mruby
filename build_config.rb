@@ -6,7 +6,7 @@ def gem_config(conf)
   conf.gem github: 'iij/mruby-mtest'
   conf.gem github: 'kjunichi/mruby-uuid'
   conf.gem github: 'matsumoto-r/mruby-simplehttp'
-  conf.gem github: 'pathfinder-cm/mruby-lxd'
+  conf.gem github: 'pathfinder-cm/mruby-pathfinder-client'
   conf.gem File.expand_path(File.dirname(__FILE__))
 end
 

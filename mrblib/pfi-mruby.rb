@@ -1,12 +1,38 @@
 def __main__(argv)
-  command = PfiMruby::Command.new(
-    argv: argv,
+  CLUSTER_NAME = 'default'
+  AUTHENTICATION_TOKEN = 'pathfinder'
+
+  root_command = PfiMruby::Command.new(
     use: 'pfi',
     short: 'pfi is CLI for Pathfinder Container Manager',
     long: "(P)ath(f)inder (I)nterface
                 CLI for Pathfinder Container Manager.
                 See http://github.com/pathfinder-cm/pfi",
-    run: Proc.new { |command| command.help }
+    run: Proc.new { |command, argv| command.help }
   )
-  command.execute
+
+  get_command = PfiMruby::Command.new(
+    use: 'get',
+    short: 'Specify things to get',
+    long: 'Specify things to get',
+    run: Proc.new { |command, argv| command.help }
+  )
+
+  get_nodes_command = PfiMruby::Command.new(
+    use: 'nodes',
+    short: 'List all available nodes',
+    long: 'List all available nodes',
+    run: Proc.new { |command, argv|
+      pathfinder = Pathfinder::PathfinderExt.new(port: 3000)
+      _, nodes = pathfinder.get_nodes(cluster_name: CLUSTER_NAME, authentication_token: AUTHENTICATION_TOKEN)
+      puts "Hostname, Ipaddress"
+      nodes.each do |node|
+        puts "#{node.hostname}, #{node.ipaddress}"
+      end
+    }
+  )
+
+  get_command.add_command(get_nodes_command)
+  root_command.add_command(get_command)
+  root_command.execute(argv)
 end

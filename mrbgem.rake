@@ -8,5 +8,5 @@ MRuby::Gem::Specification.new('pfi-mruby') do |spec|
   spec.bins    = ['pfi-mruby']
   spec.add_dependency('mruby-print')
   spec.add_dependency('mruby-mtest')
-  spec.add_dependency('mruby-lxd', github: 'pathfinder-cm/mruby-lxd')
+  spec.add_dependency('mruby-pathfinder-client', github: 'pathfinder-cm/mruby-pathfinder-client')
 end

@@ -1,16 +1,34 @@
 module PfiMruby
   class Command
-    def initialize(argv:, use:, short:, long: nil, run: nil)
-      @argv = argv
+    attr_accessor :use, :short, :long, :depth
+
+    def initialize(use:, short:, long: nil, run: nil)
       @use = use
       @short = short
       @long = long || short
       @run = run
       @commands = []
+      @depth = 0
     end
 
-    def execute
-      @run.call(self)
+    def add_command(command)
+      command.depth = @depth + 1
+      @commands << command
+    end
+
+    def execute(argv)
+      if argv.length == 1
+        @run.call(self)
+      else
+        command = @commands.find{ |cmd| cmd.use == argv[1]}
+        if command
+          command.execute(argv[1..-1])
+        elsif argv[1] == 'help'
+          help
+        else
+          puts 'Command not found.'
+        end
+      end
     end
 
     def generate_command_info
@@ -27,7 +45,7 @@ module PfiMruby
       str << "\n"
       str << "Available Commands:\n"
       generate_command_info.each do |cmd|
-        str << "  #{cmd[:name]}     #{cmd[:description]}"
+        str << "  #{cmd[:name]}     #{cmd[:description]}\n"
       end
       puts str
     end
