@@ -5,6 +5,14 @@ def __main__(argv)
   CLUSTER_NAME = 'default'
   AUTHENTICATION_TOKEN = 'pathfinder'
 
+  pathfinder = Pathfinder::PathfinderExt.new(
+    cluster_name: CLUSTER_NAME,
+    authentication_token: AUTHENTICATION_TOKEN,
+    scheme: PATHFINDER_SCHEME,
+    address: PATHFINDER_ADDRESS,
+    port: PATHFINDER_PORT
+  )
+
   root_command = PfiMruby::Command.new(
     use: 'pfi',
     short: 'pfi is CLI for Pathfinder Container Manager',
@@ -25,13 +33,6 @@ def __main__(argv)
     short: 'List all available nodes',
     long: 'List all available nodes',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(
-        cluster_name: CLUSTER_NAME,
-        authentication_token: AUTHENTICATION_TOKEN,
-        scheme: PATHFINDER_SCHEME,
-        address: PATHFINDER_ADDRESS,
-        port: PATHFINDER_PORT
-      )
       _, nodes = pathfinder.get_nodes
       puts "Hostname, Ipaddress"
       nodes.each do |node|
@@ -46,13 +47,6 @@ def __main__(argv)
     short: 'List all available containers',
     long: 'List all available containers',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(
-        cluster_name: CLUSTER_NAME,
-        authentication_token: AUTHENTICATION_TOKEN,
-        scheme: PATHFINDER_SCHEME,
-        address: PATHFINDER_ADDRESS,
-        port: PATHFINDER_PORT
-      )
       _, containers = pathfinder.get_containers
       puts "Hostname, Ipaddress, Image, Status"
       containers.each do |container|
@@ -74,13 +68,6 @@ def __main__(argv)
     short: 'Create a container',
     long: 'Create a container',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(
-        cluster_name: CLUSTER_NAME,
-        authentication_token: AUTHENTICATION_TOKEN,
-        scheme: PATHFINDER_SCHEME,
-        address: PATHFINDER_ADDRESS,
-        port: PATHFINDER_PORT
-      )
       _, container = pathfinder.create_container(
         container: Pathfinder::Container.new(hostname: argv[1], image: argv[2])
       )
@@ -101,13 +88,6 @@ def __main__(argv)
     short: 'Delete a container',
     long: 'Delete a container',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(
-        cluster_name: CLUSTER_NAME,
-        authentication_token: AUTHENTICATION_TOKEN,
-        scheme: PATHFINDER_SCHEME,
-        address: PATHFINDER_ADDRESS,
-        port: PATHFINDER_PORT
-      )
       _, container = pathfinder.delete_container(
         container: Pathfinder::Container.new(hostname: argv[1])
       )
@@ -128,13 +108,6 @@ def __main__(argv)
     short: 'Reschedule a container',
     long: 'Reschedule a container',
     run: Proc.new { |command, argv|
-      pathfinder = Pathfinder::PathfinderExt.new(
-        cluster_name: CLUSTER_NAME,
-        authentication_token: AUTHENTICATION_TOKEN,
-        scheme: PATHFINDER_SCHEME,
-        address: PATHFINDER_ADDRESS,
-        port: PATHFINDER_PORT
-      )
       _, container = pathfinder.reschedule_container(
         container: Pathfinder::Container.new(hostname: argv[1])
       )
