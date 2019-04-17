@@ -1,16 +1,12 @@
 def __main__(argv)
-  PATHFINDER_SCHEME = 'http'
-  PATHFINDER_ADDRESS = 'localhost'
-  PATHFINDER_PORT = 3000
-  CLUSTER_NAME = 'default'
-  AUTHENTICATION_TOKEN = 'pathfinder'
+  config = load_config
 
   pathfinder = Pathfinder::PathfinderExt.new(
-    cluster_name: CLUSTER_NAME,
-    authentication_token: AUTHENTICATION_TOKEN,
-    scheme: PATHFINDER_SCHEME,
-    address: PATHFINDER_ADDRESS,
-    port: PATHFINDER_PORT
+    cluster_name: config[:cluster],
+    authentication_token: config[:cluster_token],
+    scheme: config[:pf_server_scheme],
+    address: config[:pf_server_addr],
+    port: config[:pf_server_port]
   )
 
   root_command = PfiMruby::Command.new(
@@ -125,4 +121,42 @@ def __main__(argv)
   root_command.add_command(version_command)
 
   root_command.execute(argv)
+end
+
+def load_config
+  config_json = ''
+  if File.exist?("#{ENV['HOME']}/.pathfinder/pfi-config.json")
+    File.foreach("#{ENV['HOME']}/.pathfinder/pfi-config.json") do |line|
+      config_json << line
+    end
+  end
+
+  if config_json.nil?
+    profile = {}
+  else
+    # Example:
+    #
+    # {
+    #   "current_profile": "default",
+    #   "profiles": {
+    #     "default": {
+    #       "pf_server_scheme": "http",
+    #       "pf_server_addr": "127.0.0.1",
+    #       "pf_server_port": 8080,
+    #       "cluster": "default",
+    #       "cluster_token": "pathfinder"
+    #     }
+    #   }
+    # }
+    config = JSON.parse(config_json)
+    profile = config['profiles'][config['current_profile']]
+  end
+
+  return {
+    pf_server_scheme: profile['pf_server_scheme'] || 'http',
+    pf_server_addr: profile['pf_server_addr'] || '127.0.0.1',
+    pf_server_port: profile['pf_server_port'] || 8080,
+    cluster: profile['cluster'] || 'default',
+    cluster_token: profile['cluster_token'] || 'pathfinder'
+  }
 end
